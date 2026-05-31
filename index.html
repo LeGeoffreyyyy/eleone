@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Joyeux Anniversaire Mon Amour !</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;600&display=swap');
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #fff0f3 0%, #fde4cf 100%); /* Fond plus chaud et festif */
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .title-font {
+            font-family: 'Dancing Script', cursive;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px 0 rgba(255, 105, 135, 0.2);
+        }
+
+        /* Animations */
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out forwards;
+        }
+        
+        .fade-out {
+            animation: fadeOut 0.5s ease-in-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; transform: translateY(0); }
+            to { opacity: 0; transform: translateY(-20px); }
+        }
+
+        .shake {
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            50% { transform: translateX(10px); }
+            75% { transform: translateX(-10px); }
+            100% { transform: translateX(0); }
+        }
+
+        /* Décorations flottantes pour le fond (Amour + Anniversaire) */
+        .floating-item {
+            position: fixed;
+            font-size: 20px;
+            animation: floatUp 4s linear infinite;
+            opacity: 0.6;
+            z-index: -1;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) rotate(0deg) scale(0.5); opacity: 0; }
+            50% { opacity: 0.6; }
+            100% { transform: translateY(-20vh) rotate(20deg) scale(1.2); opacity: 0; }
+        }
+        
+        .countdown-box {
+            background: linear-gradient(135deg, #ff758c 0%, #f9a826 100%); /* Dégradé Rose et Or festif */
+            color: white;
+        }
+
+        /* Style custom scrollbar pour la galerie */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.05);
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(255, 105, 135, 0.5);
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center p-4 py-8 relative">
+
+    <!-- Container Principal -->
+    <div id="app-container" class="glass-card w-full max-w-lg rounded-3xl p-8 text-center relative z-10 fade-in border-t-4 border-rose-400">
+        
+        <!-- ÉCRAN 1 : ACCUEIL -->
+        <div id="screen-welcome" class="space-y-6">
+            <h1 class="title-font text-5xl text-rose-500 mb-4">
+                Coucou mon amour ! <i class="fa-solid fa-cake-candles text-3xl ml-2 text-rose-400"></i>
+            </h1>
+            <p class="text-gray-700 text-lg">
+                Pour ton anniversaire, je t'ai préparé une petite surprise... 
+                Mais pour y accéder, tu vas devoir prouver que tu connais bien notre couple ! 😉
+            </p>
+            <div class="pt-4">
+                <button onclick="startQuiz()" class="bg-rose-500 hover:bg-rose-600 text-white font-bold py-3 px-8 rounded-full transition-transform transform hover:scale-105 shadow-lg">
+                    Commencer le jeu <i class="fa-solid fa-heart ml-2"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- ÉCRAN 2 : LE QUIZ -->
+        <div id="screen-quiz" class="hidden space-y-6">
+            <div class="flex justify-between items-center mb-4 text-sm text-gray-500 font-semibold">
+                <span id="question-counter">Question 1/3</span>
+                <div class="flex space-x-1" id="progress-dots">
+                    <!-- Généré en JS -->
+                </div>
+            </div>
+            
+            <h2 id="question-text" class="text-2xl font-semibold text-gray-800 mb-6">Question ici?</h2>
+            
+            <div id="options-container" class="space-y-3 flex flex-col">
+                <!-- Boutons générés en JS -->
+            </div>
+        </div>
+
+        <!-- ÉCRAN 3 : ERREUR -->
+        <div id="screen-error" class="hidden space-y-6">
+            <div class="text-6xl mb-4">💔</div>
+            <h2 class="title-font text-4xl text-red-500">Aïe aïe aïe...</h2>
+            <p class="text-gray-700 text-lg">
+                Ce n'est pas la bonne réponse ! Tu as un gage... non je rigole, mais tu dois tout recommencer !
+            </p>
+            <div class="pt-4">
+                <button onclick="resetQuiz()" class="bg-gray-800 hover:bg-gray-900 text-white font-bold py-3 px-8 rounded-full transition-transform transform hover:scale-105 shadow-lg">
+                    Réessayer 🥺
+                </button>
+            </div>
+        </div>
+
+        <!-- ÉCRAN 4 : FINAL (RÉCOMPENSE) -->
+        <div id="screen-final" class="hidden space-y-6">
+            <h1 class="title-font text-4xl text-rose-500 mb-2">Joyeux Anniversaire mon amour ! 🎉🎁</h1>
+            <p class="text-gray-700">Tu as tout trouvé ! Voici ta récompense...</p>
+            
+            <!-- Emplacement pour votre photo -->
+            <div class="relative w-48 h-48 mx-auto mt-6 mb-6 rounded-full overflow-hidden border-4 border-rose-300 shadow-xl">
+                <!-- REMPLACE L'URL DE L'IMAGE CI-DESSOUS PAR UNE PHOTO DE VOUS DEUX -->
+                <img src="https://images.unsplash.com/photo-1518199266791-5375a83164ba?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60" alt="Nous deux" class="w-full h-full object-cover">
+            </div>
+
+            <p class="text-lg font-semibold text-gray-800 mb-2">Prépare-toi pour la vraie surprise dans :</p>
+            
+            <!-- Compteur -->
+            <div class="grid grid-cols-4 gap-2 text-center mt-4 mb-8">
+                <div class="countdown-box rounded-xl p-2 shadow-md">
+                    <div id="cd-days" class="text-3xl font-bold">00</div>
+                    <div class="text-xs uppercase font-semibold">Jours</div>
+                </div>
+                <div class="countdown-box rounded-xl p-2 shadow-md">
+                    <div id="cd-hours" class="text-3xl font-bold">00</div>
+                    <div class="text-xs uppercase font-semibold">Heures</div>
+                </div>
+                <div class="countdown-box rounded-xl p-2 shadow-md">
+                    <div id="cd-minutes" class="text-3xl font-bold">00</div>
+                    <div class="text-xs uppercase font-semibold">Min</div>
+                </div>
+                <div class="countdown-box rounded-xl p-2 shadow-md">
+                    <div id="cd-seconds" class="text-3xl font-bold">00</div>
+                    <div class="text-xs uppercase font-semibold">Sec</div>
+                </div>
+            </div>
+            
+            <p class="text-sm text-gray-500 mt-4 italic">Rendez-vous le 9 juin à 18h00...</p>
+
+            <!-- BOUTON SECRET -->
+            <div class="pt-6 border-t border-rose-200 mt-6">
+                <button onclick="checkPassword()" class="text-sm text-rose-400 hover:text-rose-600 font-medium transition-colors">
+                    <i class="fa-solid fa-lock text-xs mr-1"></i> J'ai un mot de passe secret
+                </button>
+            </div>
+        </div>
+
+        <!-- ÉCRAN 5 : VIP / SECRET -->
+        <div id="screen-secret" class="hidden space-y-4">
+            <h1 class="title-font text-4xl text-rose-500 mb-2">L'Espace VIP 🤫</h1>
+            <p class="text-gray-700 text-sm">Bravo, tu as trouvé le code ! Voici notre petit coin rien qu'à nous...</p>
+            
+            <div class="max-h-[60vh] overflow-y-auto custom-scrollbar pr-2 pb-4">
+                <!-- Galerie Photos secrètes -->
+                <div class="grid grid-cols-2 gap-3 mt-4">
+                    <!-- REMPLACE CES URLS PAR VOS PHOTOS -->
+                    <img src="https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?w=400&h=400&fit=crop" class="rounded-xl shadow-md border-2 border-white aspect-square object-cover">
+                    <img src="https://images.unsplash.com/photo-1511895426328-dc8714191300?w=400&h=400&fit=crop" class="rounded-xl shadow-md border-2 border-white aspect-square object-cover">
+                    <img src="https://images.unsplash.com/photo-1522673607200-164d1b6ce486?w=400&h=400&fit=crop" class="rounded-xl shadow-md border-2 border-white aspect-square object-cover">
+                    <img src="https://images.unsplash.com/photo-1606800052052-a08af7148866?w=400&h=400&fit=crop" class="rounded-xl shadow-md border-2 border-white aspect-square object-cover">
+                </div>
+
+                <!-- Embed Youtube -->
+                <div class="mt-6 w-full rounded-xl overflow-hidden shadow-lg border-2 border-rose-200 bg-black">
+                    <!-- REMPLACE LE LIEN EMBED DE LA VIDÉO ICI -->
+                    <iframe width="100%" height="200" src="https://www.youtube.com/embed/jfKfPfyJRdk" title="Vidéo spéciale" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+            </div>
+
+            <div class="pt-4">
+                <button onclick="switchScreen('screen-secret', 'screen-final')" class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-2 px-6 rounded-full transition-colors text-sm">
+                    <i class="fa-solid fa-arrow-left mr-2"></i> Retour au compteur
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // ==========================================
+        // 1. CONFIGURATION DU QUIZ
+        // ==========================================
+        const questions = [
+            {
+                question: "Où avons-nous échangé notre tout premier baiser ?",
+                options: ["Dans la voiture", "Au devant d'une scène", "Lors d'une balade", "Chez moi"],
+                correctAnswerIndex: 1
+            },
+            {
+                question: "Quel est le petit surnom que je te donne le plus souvent ?",
+                options: ["Mon cœur", "Bébé", "Ma mouette", "Mon amour"],
+                correctAnswerIndex: [0, 1, 2, 3]
+            },
+            {
+                question: "Quel plat je pourrais manger tous les jours sans me lasser ?",
+                options: ["Des pâtes carbo", "Des pâtes chorizo", "Une pizza", "Un burger"],
+                correctAnswerIndex: 1
+            },
+            {
+                question: "Quel est le premier artiste que nous ayons écouté ensemble?",
+                options: ["Rim'K", "Green Montana", "JoLaGreen23", "PLK"],
+                correctAnswerIndex: 2
+            }
+        ];
+
+        // ==========================================
+        // 2. LOGIQUE DU JEU ET DES ÉCRANS
+        // ==========================================
+        let currentQuestion = 0;
+
+        function switchScreen(hideId, showId) {
+            const hideEl = document.getElementById(hideId);
+            const showEl = document.getElementById(showId);
+            
+            hideEl.classList.remove('fade-in');
+            hideEl.classList.add('fade-out');
+            
+            setTimeout(() => {
+                hideEl.classList.add('hidden');
+                hideEl.classList.remove('fade-out');
+                
+                showEl.classList.remove('hidden');
+                showEl.classList.add('fade-in');
+            }, 400); 
+        }
+
+        function startQuiz() {
+            currentQuestion = 0;
+            loadQuestion();
+            switchScreen('screen-welcome', 'screen-quiz');
+        }
+
+        function loadQuestion() {
+            const q = questions[currentQuestion];
+            document.getElementById('question-text').innerText = q.question;
+            document.getElementById('question-counter').innerText = `Question ${currentQuestion + 1}/${questions.length}`;
+            
+            const dotsContainer = document.getElementById('progress-dots');
+            dotsContainer.innerHTML = '';
+            for(let i=0; i<questions.length; i++) {
+                const dot = document.createElement('div');
+                dot.className = `w-2 h-2 rounded-full ${i <= currentQuestion ? 'bg-rose-500' : 'bg-gray-300'}`;
+                dotsContainer.appendChild(dot);
+            }
+
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+            
+            q.options.forEach((opt, index) => {
+                const btn = document.createElement('button');
+                btn.className = "w-full text-left px-6 py-4 rounded-xl border-2 border-rose-100 hover:border-rose-400 hover:bg-rose-50 transition-colors text-gray-700 font-medium focus:outline-none";
+                btn.innerText = opt;
+                btn.onclick = () => checkAnswer(index, btn);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function checkAnswer(selectedIndex, btnElement) {
+            const correctIndex = questions[currentQuestion].correctAnswerIndex;
+            
+            let isCorrect = Array.isArray(correctIndex) 
+                ? correctIndex.includes(selectedIndex) 
+                : selectedIndex === correctIndex;
+            
+            if (isCorrect) {
+                btnElement.classList.add('bg-green-100', 'border-green-400', 'text-green-800');
+                
+                setTimeout(() => {
+                    currentQuestion++;
+                    if (currentQuestion < questions.length) {
+                        const quizScreen = document.getElementById('screen-quiz');
+                        quizScreen.classList.remove('fade-in');
+                        void quizScreen.offsetWidth; 
+                        quizScreen.classList.add('fade-in');
+                        loadQuestion();
+                    } else {
+                        switchScreen('screen-quiz', 'screen-final');
+                        startCountdown();
+                        createConfetti();
+                    }
+                }, 600);
+
+            } else {
+                btnElement.classList.add('bg-red-100', 'border-red-400', 'text-red-800', 'shake');
+                setTimeout(() => {
+                    switchScreen('screen-quiz', 'screen-error');
+                }, 800);
+            }
+        }
+
+        function resetQuiz() {
+            switchScreen('screen-error', 'screen-welcome');
+        }
+
+        // ==========================================
+        // 3. LOGIQUE DU MOT DE PASSE SECRET
+        // ==========================================
+        function checkPassword() {
+            // Demande le mot de passe via une boite de dialogue
+            const pwd = prompt("Quel est le mot de passe secret ? 🤫");
+            
+            if (pwd && pwd.toLowerCase().trim() === "petitesalope") {
+                switchScreen('screen-final', 'screen-secret');
+            } else if (pwd !== null) { // S'il a tapé faux et n'a pas annulé
+                alert("Mauvais mot de passe ! 😜");
+            }
+        }
+
+        // ==========================================
+        // 4. LOGIQUE DU COMPTE À REBOURS
+        // ==========================================
+        const targetDate = new Date("June 9, 2026 18:00:00").getTime();
+
+        function startCountdown() {
+            updateCountdown(); 
+            setInterval(updateCountdown, 1000);
+        }
+
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const distance = targetDate - now;
+
+            if (distance < 0) {
+                document.getElementById("cd-days").innerText = "00";
+                document.getElementById("cd-hours").innerText = "00";
+                document.getElementById("cd-minutes").innerText = "00";
+                document.getElementById("cd-seconds").innerText = "00";
+                return;
+            }
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            document.getElementById("cd-days").innerText = days.toString().padStart(2, '0');
+            document.getElementById("cd-hours").innerText = hours.toString().padStart(2, '0');
+            document.getElementById("cd-minutes").innerText = minutes.toString().padStart(2, '0');
+            document.getElementById("cd-seconds").innerText = seconds.toString().padStart(2, '0');
+        }
+
+        // ==========================================
+        // 5. EFFETS VISUELS (Décorations & Confettis)
+        // ==========================================
+        function createFloatingDecorations() {
+            const icons = ['fa-heart', 'fa-gift', 'fa-cake-candles', 'fa-star'];
+            const colors = ['#ff4d6d', '#ffd166', '#ff9f1c', '#ffb3c6'];
+
+            setInterval(() => {
+                const item = document.createElement('i');
+                const randomIcon = icons[Math.floor(Math.random() * icons.length)];
+                const randomColor = colors[Math.floor(Math.random() * colors.length)];
+                
+                item.classList.add('fa-solid', randomIcon, 'floating-item');
+                item.style.color = randomColor;
+                item.style.left = Math.random() * 100 + 'vw';
+                item.style.animationDuration = (Math.random() * 4 + 3) + 's';
+                item.style.fontSize = (Math.random() * 20 + 15) + 'px';
+                document.body.appendChild(item);
+
+                setTimeout(() => {
+                    item.remove();
+                }, 7000);
+            }, 400);
+        }
+        createFloatingDecorations();
+
+        function createConfetti() {
+            for(let i=0; i<50; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.style.position = 'fixed';
+                    confetti.style.left = '50%';
+                    confetti.style.top = '50%';
+                    confetti.style.width = '10px';
+                    confetti.style.height = '10px';
+                    confetti.style.backgroundColor = ['#ff4d6d', '#ffb3c6', '#ffd166', '#06d6a0'][Math.floor(Math.random() * 4)];
+                    confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+                    confetti.style.zIndex = '100';
+                    confetti.style.transition = 'all 1s ease-out';
+                    
+                    document.body.appendChild(confetti);
+
+                    const angle = Math.random() * Math.PI * 2;
+                    const velocity = 100 + Math.random() * 100;
+                    
+                    setTimeout(() => {
+                        confetti.style.transform = `translate(${Math.cos(angle) * velocity}px, ${Math.sin(angle) * velocity}px) rotate(${Math.random() * 360}deg)`;
+                        confetti.style.opacity = '0';
+                    }, 50);
+
+                    setTimeout(() => confetti.remove(), 1000);
+                }, i * 20);
+            }
+        }
+    </script>
+</body>
+</html>
