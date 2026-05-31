@@ -97,8 +97,45 @@
     <!-- Container Principal -->
     <div id="app-container" class="glass-card w-full max-w-lg rounded-3xl p-8 text-center relative z-10 fade-in border-t-4 border-rose-400">
         
+        <!-- ÉCRAN 0 : VERROUILLAGE (Nouveau !) -->
+        <div id="screen-lock" class="space-y-6">
+            <i class="fa-solid fa-lock text-5xl text-rose-400 mb-2"></i>
+            <h1 class="title-font text-4xl text-rose-500 mb-2">Pas si vite ! ⏳</h1>
+            <p class="text-gray-700">La surprise n'est pas encore prête. Reviens dans :</p>
+            
+            <div class="grid grid-cols-4 gap-2 text-center mt-6 mb-8">
+                <div class="countdown-box rounded-xl p-3 shadow-md">
+                    <div id="lock-cd-days" class="text-4xl font-bold">00</div>
+                    <div class="text-xs uppercase font-semibold mt-1">Jours</div>
+                </div>
+                <div class="countdown-box rounded-xl p-3 shadow-md">
+                    <div id="lock-cd-hours" class="text-4xl font-bold">00</div>
+                    <div class="text-xs uppercase font-semibold mt-1">Heures</div>
+                </div>
+                <div class="countdown-box rounded-xl p-3 shadow-md">
+                    <div id="lock-cd-minutes" class="text-4xl font-bold">00</div>
+                    <div class="text-xs uppercase font-semibold mt-1">Min</div>
+                </div>
+                <div class="countdown-box rounded-xl p-3 shadow-md">
+                    <div id="lock-cd-seconds" class="text-4xl font-bold">00</div>
+                    <div class="text-xs uppercase font-semibold mt-1">Sec</div>
+                </div>
+            </div>
+
+            <div class="mt-8 pt-6 border-t border-rose-200">
+                <p class="text-sm text-gray-500 mb-3">Ou entre le mot de passe magique :</p>
+                <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 justify-center items-center">
+                    <input type="password" id="magic-password" placeholder="Mot de passe..." onkeypress="if(event.key === 'Enter') checkMagicPassword()" class="px-4 py-2 rounded-full border-2 border-rose-200 focus:outline-none focus:border-rose-400 text-center w-48">
+                    <button onclick="checkMagicPassword()" class="bg-rose-500 hover:bg-rose-600 text-white font-bold py-2 px-6 rounded-full transition-colors shadow-md w-full sm:w-auto">
+                        Valider
+                    </button>
+                </div>
+                <p id="lock-error" class="text-red-500 text-sm mt-2 hidden font-medium">Mauvais mot de passe ! 😜</p>
+            </div>
+        </div>
+
         <!-- ÉCRAN 1 : ACCUEIL -->
-        <div id="screen-welcome" class="space-y-6">
+        <div id="screen-welcome" class="hidden space-y-6">
             <h1 class="title-font text-5xl text-rose-500 mb-4">
                 Coucou mon amour ! <i class="fa-solid fa-cake-candles text-3xl ml-2 text-rose-400"></i>
             </h1>
@@ -176,7 +213,7 @@
                 </div>
             </div>
             
-            <p class="text-sm text-gray-500 mt-4 italic">Rendez-vous le 9 juin à 18h00 pour en savoir plus sur ton cadeau...</p>
+            <p class="text-sm text-gray-500 mt-4 italic">Rendez-vous le 9 juin à 18h00...</p>
 
             <!-- BOUTON SECRET -->
             <div class="pt-6 border-t border-rose-200 mt-6">
@@ -219,28 +256,29 @@
 
     <script>
         // ==========================================
-        // 1. CONFIGURATION DU QUIZ
+        // 1. CONFIGURATION DU QUIZ (SÉCURISÉE)
         // ==========================================
+        // Les réponses correctes sont masquées (obfusquées)
         const questions = [
             {
                 question: "Où avons-nous échangé notre tout premier baiser ?",
                 options: ["Dans la voiture", "Au devant d'une scène", "Lors d'une balade", "Chez moi"],
-                correctAnswerIndex: 1
+                c: atob("MQ==") // Index 1 encodé
             },
             {
                 question: "Quel est le petit surnom que je te donne le plus souvent ?",
                 options: ["Mon cœur", "Bébé", "Ma mouette", "Mon amour"],
-                correctAnswerIndex: [0, 1, 2, 3]
+                c: [atob("MA=="), atob("MQ=="), atob("Mg=="), atob("Mw==")] // Index 0,1,2,3 encodés
             },
             {
                 question: "Quel plat je pourrais manger tous les jours sans me lasser ?",
                 options: ["Des pâtes carbo", "Des pâtes chorizo", "Une pizza", "Un burger"],
-                correctAnswerIndex: 1
+                c: atob("MQ==") // Index 1 encodé
             },
             {
                 question: "Quel est le premier artiste que nous ayons écouté ensemble?",
                 options: ["Rim'K", "Green Montana", "JoLaGreen23", "PLK"],
-                correctAnswerIndex: 2
+                c: atob("Mg==") // Index 2 encodé
             }
         ];
 
@@ -297,11 +335,15 @@
         }
 
         function checkAnswer(selectedIndex, btnElement) {
-            const correctIndex = questions[currentQuestion].correctAnswerIndex;
+            const correctIndex = questions[currentQuestion].c;
             
-            let isCorrect = Array.isArray(correctIndex) 
-                ? correctIndex.includes(selectedIndex) 
-                : selectedIndex === correctIndex;
+            // Décoder et vérifier la réponse
+            let isCorrect = false;
+            if (Array.isArray(correctIndex)) {
+                 isCorrect = correctIndex.map(Number).includes(selectedIndex);
+            } else {
+                 isCorrect = selectedIndex === Number(correctIndex);
+            }
             
             if (isCorrect) {
                 btnElement.classList.add('bg-green-100', 'border-green-400', 'text-green-800');
@@ -337,20 +379,80 @@
         // 3. LOGIQUE DU MOT DE PASSE SECRET
         // ==========================================
         function checkPassword() {
-            // Demande le mot de passe via une boite de dialogue
             const pwd = prompt("Quel est le mot de passe secret ? 🤫");
             
-            if (pwd && pwd.toLowerCase().trim() === "petitesalope") {
+          
+            if (pwd && btoa(pwd.toLowerCase().trim()) === "cGV0aXRlc2Fsb3Bl") {
                 switchScreen('screen-final', 'screen-secret');
-            } else if (pwd !== null) { // S'il a tapé faux et n'a pas annulé
+            } else if (pwd !== null) { 
                 alert("Mauvais mot de passe ! 😜");
             }
         }
 
         // ==========================================
-        // 4. LOGIQUE DU COMPTE À REBOURS
+        // 4. LOGIQUE DU COMPTE À REBOURS ET VERROUILLAGE
         // ==========================================
-        const targetDate = new Date("June 9, 2026 18:00:00").getTime();
+        const lockTargetDate = new Date("June 9, 2026 00:01:00").getTime();
+        const finalTargetDate = new Date("June 9, 2026 18:00:00").getTime();
+        let lockInterval;
+
+        function initApp() {
+            const now = new Date().getTime();
+            if (now >= lockTargetDate) {
+                document.getElementById('screen-lock').classList.add('hidden');
+                document.getElementById('screen-welcome').classList.remove('hidden');
+            } else {
+                startLockCountdown();
+            }
+        }
+
+        function startLockCountdown() {
+            updateLockCountdown(); 
+            lockInterval = setInterval(updateLockCountdown, 1000);
+        }
+
+        function updateLockCountdown() {
+            const now = new Date().getTime();
+            const distance = lockTargetDate - now;
+
+            if (distance <= 0) {
+                clearInterval(lockInterval);
+                document.getElementById("lock-cd-days").innerText = "00";
+                document.getElementById("lock-cd-hours").innerText = "00";
+                document.getElementById("lock-cd-minutes").innerText = "00";
+                document.getElementById("lock-cd-seconds").innerText = "00";
+                switchScreen('screen-lock', 'screen-welcome');
+                return;
+            }
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            document.getElementById("lock-cd-days").innerText = days.toString().padStart(2, '0');
+            document.getElementById("lock-cd-hours").innerText = hours.toString().padStart(2, '0');
+            document.getElementById("lock-cd-minutes").innerText = minutes.toString().padStart(2, '0');
+            document.getElementById("lock-cd-seconds").innerText = seconds.toString().padStart(2, '0');
+        }
+
+        function checkMagicPassword() {
+            const pwd = document.getElementById("magic-password").value;
+            const errorMsg = document.getElementById("lock-error");
+            
+         
+            if (btoa(pwd.toLowerCase().trim()) === "Z2VvZmZyZXlsZXJvaQ==") {
+                clearInterval(lockInterval);
+                switchScreen('screen-lock', 'screen-welcome');
+            } else {
+                errorMsg.classList.remove("hidden");
+                const inputEl = document.getElementById("magic-password");
+                inputEl.classList.add("shake", "border-red-400");
+                setTimeout(() => {
+                    inputEl.classList.remove("shake", "border-red-400");
+                }, 500);
+            }
+        }
 
         function startCountdown() {
             updateCountdown(); 
@@ -359,7 +461,7 @@
 
         function updateCountdown() {
             const now = new Date().getTime();
-            const distance = targetDate - now;
+            const distance = finalTargetDate - now;
 
             if (distance < 0) {
                 document.getElementById("cd-days").innerText = "00";
@@ -381,7 +483,7 @@
         }
 
         // ==========================================
-        // 5. EFFETS VISUELS (Décorations & Confettis)
+        // 5. EFFETS VISUELS
         // ==========================================
         function createFloatingDecorations() {
             const icons = ['fa-heart', 'fa-gift', 'fa-cake-candles', 'fa-star'];
@@ -434,6 +536,12 @@
                 }, i * 20);
             }
         }
+
+        // ==========================================
+        // 6. INITIALISATION
+        // ==========================================
+        window.onload = initApp;
+
     </script>
 </body>
 </html>
