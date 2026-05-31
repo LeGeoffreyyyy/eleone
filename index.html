@@ -88,6 +88,44 @@
             border-radius: 10px;
         }
     </style>
+
+    <script id="app-config" type="application/json">
+    {
+        "lockTargetDate": "June 9, 2026 00:01:00",
+        "finalTargetDate": "June 9, 2026 17:00:00",
+        "magicPassword": "Z2VvZmZyZXlsZXJvaQ==",
+        "vipPassword": "cGV0aXRlc2Fsb3Bl",
+        "questions": [
+            {
+                "question": "Où avons-nous échangé notre tout premier baiser ?",
+                "options": ["Dans la voiture", "Au devant d'une scène", "Lors d'une balade", "Chez moi"],
+                "c": "MQ=="
+            },
+            {
+                "question": "Quel est le petit surnom que je te donne le plus souvent ?",
+                "options": ["Mon cœur", "Bébé", "Ma mouette", "Mon amour"],
+                "c": "MCwxLDIsMw=="
+            },
+            {
+                "question": "Quel plat je pourrais manger tous les jours sans me lasser ?",
+                "options": ["Des pâtes carbo", "Des pâtes chorizo", "Une pizza", "Un burger"],
+                "c": "MQ=="
+            },
+            {
+                "question": "Quel est le premier artiste que nous ayons écouté ensemble?",
+                "options": ["Rim'K", "Green Montana", "JoLaGreen23", "PLK"],
+                "c": "Mg=="
+            }
+        ],
+        "vipImages": [
+            "aHR0cHM6Ly9pbWFnZXMudW5zcGxhc2guY29tL3Bob3RvLTE1MjkzMzMxNjY0MzctNzc1MGE2ZGQ1YTcwP3c9NDAwJmg9NDAwJmZpdD1jcm9w",
+            "aHR0cHM6Ly9pbWFnZXMudW5zcGxhc2guY29tL3Bob3RvLTE1MTE4OTU0MjYzMjgtZGM4NzE0MTkxMzAwP3c9NDAwJmg9NDAwJmZpdD1jcm9w",
+            "aHR0cHM6Ly9pbWFnZXMudW5zcGxhc2guY29tL3Bob3RvLTE1MjI2NzM2MDcyMDAtMTY0ZDFiNmNlNDg2P3c9NDAwJmg9NDAwJmZpdD1jcm9w",
+            "aHR0cHM6Ly9pbWFnZXMudW5zcGxhc2guY29tL3Bob3RvLTE2MDY4MDAwNTIwNTItYTA4YWY3MTQ4ODY2P3c9NDAwJmg9NDAwJmZpdD1jcm9w"
+        ],
+        "vipVideo": "aHR0cHM6Ly93d3cueW91dHViZS5jb20vZW1iZWQvamZLZlBmeUpSZGs="
+    }
+    </script>
 </head>
 <body class="flex items-center justify-center p-4 py-8 relative">
     <div id="app-container" class="glass-card w-full max-w-lg rounded-3xl p-8 text-center relative z-10 fade-in border-t-4 border-rose-400">
@@ -253,14 +291,14 @@
             
             <div class="max-h-[60vh] overflow-y-auto custom-scrollbar pr-2 pb-4">
                 <div class="grid grid-cols-2 gap-3 mt-4">
-                    <img src="https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?w=400&h=400&fit=crop" class="rounded-xl shadow-md border-2 border-white aspect-square object-cover">
-                    <img src="https://images.unsplash.com/photo-1511895426328-dc8714191300?w=400&h=400&fit=crop" class="rounded-xl shadow-md border-2 border-white aspect-square object-cover">
-                    <img src="https://images.unsplash.com/photo-1522673607200-164d1b6ce486?w=400&h=400&fit=crop" class="rounded-xl shadow-md border-2 border-white aspect-square object-cover">
-                    <img src="https://images.unsplash.com/photo-1606800052052-a08af7148866?w=400&h=400&fit=crop" class="rounded-xl shadow-md border-2 border-white aspect-square object-cover">
+                    <img id="vip-img-0" src="" class="vip-img rounded-xl shadow-md border-2 border-white aspect-square object-cover">
+                    <img id="vip-img-1" src="" class="vip-img rounded-xl shadow-md border-2 border-white aspect-square object-cover">
+                    <img id="vip-img-2" src="" class="vip-img rounded-xl shadow-md border-2 border-white aspect-square object-cover">
+                    <img id="vip-img-3" src="" class="vip-img rounded-xl shadow-md border-2 border-white aspect-square object-cover">
                 </div>
 
                 <div class="mt-6 w-full rounded-xl overflow-hidden shadow-lg border-2 border-rose-200 bg-black">
-                    <iframe width="100%" height="200" src="https://www.youtube.com/embed/jfKfPfyJRdk" title="Vidéo spéciale" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    <iframe id="vip-video" width="100%" height="200" src="" title="Vidéo spéciale" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                 </div>
             </div>
 
@@ -273,29 +311,32 @@
 
     </div>
 
+    <!-- BOUTON ET MODAL ADMIN -->
+    <button onclick="openAdmin()" class="fixed bottom-4 right-4 opacity-10 hover:opacity-100 transition-opacity z-[200] text-gray-500">
+        <i class="fa-solid fa-gear text-2xl"></i>
+    </button>
+
+    <div id="admin-modal" class="fixed inset-0 z-[300] hidden bg-gray-900/95 overflow-y-auto p-4 flex justify-center items-start">
+        <div class="bg-white rounded-3xl p-8 max-w-2xl w-full my-8 shadow-2xl relative">
+            <button onclick="closeAdmin()" class="absolute top-6 right-6 text-gray-500 hover:text-red-500 transition-colors">
+                <i class="fa-solid fa-xmark text-3xl"></i>
+            </button>
+            <h2 class="text-3xl font-bold mb-6 text-gray-800">🛠 Espace Administrateur</h2>
+            <div class="space-y-6 text-left" id="admin-form-container">
+                <!-- Généré par JS -->
+            </div>
+            <div class="mt-8 border-t pt-6 text-center">
+                <button onclick="saveAndExport()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transition-transform transform hover:scale-105">
+                    <i class="fa-solid fa-download mr-2"></i> Enregistrer & Télécharger la page
+                </button>
+                <p class="text-sm text-gray-500 mt-3">Un nouveau fichier HTML sera généré avec vos modifications.</p>
+            </div>
+        </div>
+    </div>
+
     <script>
-        const questions = [
-            {
-                question: "Où avons-nous échangé notre tout premier baiser ?",
-                options: ["Dans la voiture", "Au devant d'une scène", "Lors d'une balade", "Chez moi"],
-                c: atob("MQ==")
-            },
-            {
-                question: "Quel est le petit surnom que je te donne le plus souvent ?",
-                options: ["Mon cœur", "Bébé", "Ma mouette", "Mon amour"],
-                c: [atob("MA=="), atob("MQ=="), atob("Mg=="), atob("Mw==")]
-            },
-            {
-                question: "Quel plat je pourrais manger tous les jours sans me lasser ?",
-                options: ["Des pâtes carbo", "Des pâtes chorizo", "Une pizza", "Un burger"],
-                c: atob("MQ==")
-            },
-            {
-                question: "Quel est le premier artiste que nous ayons écouté ensemble?",
-                options: ["Rim'K", "Green Montana", "JoLaGreen23", "PLK"],
-                c: atob("Mg==")
-            }
-        ];
+        let appConfig = JSON.parse(document.getElementById('app-config').textContent);
+        const questions = appConfig.questions;
 
         let currentQuestion = 0;
 
@@ -347,14 +388,9 @@
         }
 
         function checkAnswer(selectedIndex, btnElement) {
-            const correctIndex = questions[currentQuestion].c;
-            
-            let isCorrect = false;
-            if (Array.isArray(correctIndex)) {
-                 isCorrect = correctIndex.map(Number).includes(selectedIndex);
-            } else {
-                 isCorrect = selectedIndex === Number(correctIndex);
-            }
+            const decodedAns = atob(questions[currentQuestion].c);
+            const correctArr = decodedAns.split(',').map(Number);
+            const isCorrect = correctArr.includes(selectedIndex);
             
             if (isCorrect) {
                 btnElement.classList.add('bg-green-100', 'border-green-400', 'text-green-800');
@@ -389,15 +425,21 @@
         function checkPassword() {
             const pwd = prompt("Quel est le mot de passe secret ? 🤫");
             
-            if (pwd && btoa(pwd.toLowerCase().trim()) === "cGV0aXRlc2Fsb3Bl") {
+            if (pwd && btoa(pwd.toLowerCase().trim()) === appConfig.vipPassword) {
+                // Charger les images et la vidéo UNIQUEMENT quand le mot de passe est bon
+                document.querySelectorAll('.vip-img').forEach((img, i) => {
+                    if(appConfig.vipImages[i]) img.src = atob(appConfig.vipImages[i]);
+                });
+                if(appConfig.vipVideo) document.getElementById('vip-video').src = atob(appConfig.vipVideo);
+
                 switchScreen('screen-final', 'screen-secret');
             } else if (pwd !== null) { 
                 alert("Mauvais mot de passe ! 😜");
             }
         }
 
-        const lockTargetDate = new Date("June 9, 2026 00:01:00").getTime();
-        const finalTargetDate = new Date("June 9, 2026 16:50:00").getTime();
+        let lockTargetDate = new Date(appConfig.lockTargetDate).getTime();
+        let finalTargetDate = new Date(appConfig.finalTargetDate).getTime();
         let lockInterval;
         let countdownInterval;
 
@@ -464,6 +506,8 @@
         }
 
         async function initApp() {
+            // (Supprimé : on ne charge plus les images au démarrage pour les cacher de l'inspecteur)
+
             await fetchRealTime();
 
             if (isCheating()) {
@@ -519,7 +563,7 @@
             const pwd = document.getElementById("magic-password").value;
             const errorMsg = document.getElementById("lock-error");
             
-            if (btoa(pwd.toLowerCase().trim()) === "Z2VvZmZyZXlsZXJvaQ==") {
+            if (btoa(pwd.toLowerCase().trim()) === appConfig.magicPassword) {
                 clearInterval(lockInterval);
                 switchScreen('screen-lock', 'screen-welcome');
             } else {
@@ -536,7 +580,7 @@
             const pwd = document.getElementById("cheat-password").value;
             const errorMsg = document.getElementById("cheat-error");
             
-            if (btoa(pwd.toLowerCase().trim()) === "Z2VvZmZyZXlsZXJvaQ==") {
+            if (btoa(pwd.toLowerCase().trim()) === appConfig.magicPassword) {
                 cheatBypassed = true;
                 
                 
@@ -671,6 +715,128 @@
                     setTimeout(() => confetti.remove(), 1000);
                 }, i * 20);
             }
+        }
+
+        // ==========================================
+        // 5. FONCTIONS ADMINISTRATEUR (GÉNÉRATEUR)
+        // ==========================================
+        function openAdmin() {
+            const pwd = prompt("Mot de passe administrateur ?");
+            if (pwd === "geoffreyleroi") {
+                populateAdminForm();
+                const modal = document.getElementById('admin-modal');
+                modal.classList.remove('hidden');
+            } else if (pwd !== null) {
+                alert("Accès refusé. 🛑");
+            }
+        }
+
+        function closeAdmin() {
+            document.getElementById('admin-modal').classList.add('hidden');
+        }
+
+        function populateAdminForm() {
+            const container = document.getElementById('admin-form-container');
+            let html = `
+                <div><label class="block font-bold">Date de déblocage du site</label><input type="text" id="admin-lock-date" value="${appConfig.lockTargetDate}" class="w-full border p-2 rounded bg-gray-50"></div>
+                <div><label class="block font-bold">Date de la surprise finale (Compteur de fin)</label><input type="text" id="admin-final-date" value="${appConfig.finalTargetDate}" class="w-full border p-2 rounded bg-gray-50"></div>
+                <div><label class="block font-bold">Mot de passe magique (anti-triche / lock)</label><input type="text" id="admin-magic-pwd" value="${atob(appConfig.magicPassword)}" class="w-full border p-2 rounded bg-gray-50"></div>
+                <div><label class="block font-bold">Mot de passe VIP (fin du jeu)</label><input type="text" id="admin-vip-pwd" value="${atob(appConfig.vipPassword)}" class="w-full border p-2 rounded bg-gray-50"></div>
+                <hr class="my-4">
+                <h3 class="font-bold text-xl text-rose-500">Images & Vidéo VIP</h3>
+            `;
+            appConfig.vipImages.forEach((img, i) => {
+                html += `<div class="mt-2"><label class="block text-sm font-semibold">Image ${i+1} (URL)</label><input type="text" id="admin-img-${i}" value="${img ? atob(img) : ''}" class="w-full border p-2 rounded text-sm bg-gray-50"></div>`;
+            });
+            html += `<div class="mt-2"><label class="block text-sm font-semibold">Vidéo YouTube (URL embed)</label><input type="text" id="admin-video" value="${appConfig.vipVideo ? atob(appConfig.vipVideo) : ''}" class="w-full border p-2 rounded text-sm bg-gray-50"></div>`;
+            
+            html += `<hr class="my-4"><h3 class="font-bold text-xl text-rose-500">Questions du Quiz</h3>`;
+            appConfig.questions.forEach((q, i) => {
+                const decodedAns = atob(q.c);
+                html += `
+                <div class="bg-gray-100 p-4 rounded-xl border border-gray-300 mt-4 shadow-inner">
+                    <label class="block font-bold mb-1">Question ${i+1}</label>
+                    <input type="text" id="admin-q-${i}" value="${q.question}" class="w-full border border-gray-300 p-2 rounded mb-2">
+                    <div class="grid grid-cols-2 gap-2">
+                        <div><span class="text-xs text-gray-500">Option 0</span><input type="text" id="admin-q-${i}-opt-0" value="${q.options[0]}" class="w-full border border-gray-300 p-2 rounded text-sm"></div>
+                        <div><span class="text-xs text-gray-500">Option 1</span><input type="text" id="admin-q-${i}-opt-1" value="${q.options[1]}" class="w-full border border-gray-300 p-2 rounded text-sm"></div>
+                        <div><span class="text-xs text-gray-500">Option 2</span><input type="text" id="admin-q-${i}-opt-2" value="${q.options[2]}" class="w-full border border-gray-300 p-2 rounded text-sm"></div>
+                        <div><span class="text-xs text-gray-500">Option 3</span><input type="text" id="admin-q-${i}-opt-3" value="${q.options[3]}" class="w-full border border-gray-300 p-2 rounded text-sm"></div>
+                    </div>
+                    <label class="block text-sm font-bold mt-3">Index de la bonne réponse (0, 1, 2 ou 3) <span class="text-xs font-normal text-gray-500">(Séparés par une virgule si plusieurs, ex: 0,1,2,3)</span></label>
+                    <input type="text" id="admin-q-${i}-ans" value="${decodedAns}" class="w-full border border-gray-300 p-2 rounded text-sm">
+                </div>`;
+            });
+            container.innerHTML = html;
+        }
+
+        function saveAndExport() {
+            // 1. Mettre à jour la configuration en mémoire
+            appConfig.lockTargetDate = document.getElementById('admin-lock-date').value;
+            appConfig.finalTargetDate = document.getElementById('admin-final-date').value;
+            appConfig.magicPassword = btoa(document.getElementById('admin-magic-pwd').value.toLowerCase().trim());
+            appConfig.vipPassword = btoa(document.getElementById('admin-vip-pwd').value.toLowerCase().trim());
+            
+            appConfig.vipImages = [
+                btoa(document.getElementById('admin-img-0').value),
+                btoa(document.getElementById('admin-img-1').value),
+                btoa(document.getElementById('admin-img-2').value),
+                btoa(document.getElementById('admin-img-3').value)
+            ];
+            appConfig.vipVideo = btoa(document.getElementById('admin-video').value);
+
+            appConfig.questions = appConfig.questions.map((q, i) => ({
+                question: document.getElementById(`admin-q-${i}`).value,
+                options: [
+                    document.getElementById(`admin-q-${i}-opt-0`).value,
+                    document.getElementById(`admin-q-${i}-opt-1`).value,
+                    document.getElementById(`admin-q-${i}-opt-2`).value,
+                    document.getElementById(`admin-q-${i}-opt-3`).value
+                ],
+                c: btoa(document.getElementById(`admin-q-${i}-ans`).value)
+            }));
+
+            // 2. Écrire le nouveau JSON dans le DOM
+            document.getElementById('app-config').textContent = JSON.stringify(appConfig, null, 4);
+
+            // 3. VIDER les liens pour l'export (ils restent invisibles dans le code source)
+            document.querySelectorAll('.vip-img').forEach(img => img.src = "");
+            document.getElementById('vip-video').src = "";
+
+            // 4. NETTOYAGE DU DOM : Remettre l'app dans son état "neuf" avant export
+            closeAdmin();
+            document.querySelectorAll('.floating-item').forEach(e => e.remove()); 
+            
+            document.getElementById('screen-welcome').classList.add('hidden');
+            document.getElementById('screen-quiz').classList.add('hidden');
+            document.getElementById('screen-error').classList.add('hidden');
+            document.getElementById('screen-final').classList.add('hidden');
+            document.getElementById('screen-secret').classList.add('hidden');
+            document.getElementById('surprise-popup').classList.add('hidden');
+            document.getElementById('cheat-popup').classList.add('hidden');
+            
+            document.getElementById('screen-lock').classList.remove('hidden');
+            document.getElementById('screen-lock').classList.remove('fade-out');
+            
+            document.getElementById('magic-password').value = '';
+            document.getElementById('cheat-password').value = '';
+
+            // 5. Patienter une fraction de seconde puis générer et télécharger
+            setTimeout(() => {
+                const htmlContent = "<!DOCTYPE html>\n<html lang=\"fr\">\n" + document.documentElement.outerHTML;
+                const blob = new Blob([htmlContent], { type: 'text/html' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'Anniversaire_Surprise.html';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                // On recharge la page pour tout remettre d'aplomb pour toi
+                setTimeout(() => location.reload(), 500);
+            }, 200);
         }
 
         window.onload = initApp;
