@@ -11,7 +11,7 @@
 
         body {
             font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #fff0f3 0%, #fde4cf 100%); /* Fond plus chaud et festif */
+            background: linear-gradient(135deg, #fff0f3 0%, #fde4cf 100%);
             min-height: 100vh;
             overflow-x: hidden;
         }
@@ -27,7 +27,6 @@
             box-shadow: 0 8px 32px 0 rgba(255, 105, 135, 0.2);
         }
 
-        /* Animations */
         .fade-in {
             animation: fadeIn 0.5s ease-in-out forwards;
         }
@@ -58,7 +57,6 @@
             100% { transform: translateX(0); }
         }
 
-        /* Décorations flottantes pour le fond (Amour + Anniversaire) */
         .floating-item {
             position: fixed;
             font-size: 20px;
@@ -74,11 +72,10 @@
         }
         
         .countdown-box {
-            background: linear-gradient(135deg, #ff758c 0%, #f9a826 100%); /* Dégradé Rose et Or festif */
+            background: linear-gradient(135deg, #ff758c 0%, #f9a826 100%); 
             color: white;
         }
 
-        /* Style custom scrollbar pour la galerie */
         .custom-scrollbar::-webkit-scrollbar {
             width: 6px;
         }
@@ -93,11 +90,8 @@
     </style>
 </head>
 <body class="flex items-center justify-center p-4 py-8 relative">
-
-    <!-- Container Principal -->
     <div id="app-container" class="glass-card w-full max-w-lg rounded-3xl p-8 text-center relative z-10 fade-in border-t-4 border-rose-400">
         
-        <!-- ÉCRAN 0 : VERROUILLAGE (Nouveau !) -->
         <div id="screen-lock" class="space-y-6">
             <i class="fa-solid fa-lock text-5xl text-rose-400 mb-2"></i>
             <h1 class="title-font text-4xl text-rose-500 mb-2">Pas si vite ! ⏳</h1>
@@ -134,7 +128,6 @@
             </div>
         </div>
 
-        <!-- ÉCRAN 1 : ACCUEIL -->
         <div id="screen-welcome" class="hidden space-y-6">
             <h1 class="title-font text-5xl text-rose-500 mb-4">
                 Coucou mon amour ! <i class="fa-solid fa-cake-candles text-3xl ml-2 text-rose-400"></i>
@@ -150,23 +143,19 @@
             </div>
         </div>
 
-        <!-- ÉCRAN 2 : LE QUIZ -->
         <div id="screen-quiz" class="hidden space-y-6">
             <div class="flex justify-between items-center mb-4 text-sm text-gray-500 font-semibold">
                 <span id="question-counter">Question 1/3</span>
                 <div class="flex space-x-1" id="progress-dots">
-                    <!-- Généré en JS -->
                 </div>
             </div>
             
             <h2 id="question-text" class="text-2xl font-semibold text-gray-800 mb-6">Question ici?</h2>
             
             <div id="options-container" class="space-y-3 flex flex-col">
-                <!-- Boutons générés en JS -->
             </div>
         </div>
 
-        <!-- ÉCRAN 3 : ERREUR -->
         <div id="screen-error" class="hidden space-y-6">
             <div class="text-6xl mb-4">💔</div>
             <h2 class="title-font text-4xl text-red-500">Aïe aïe aïe...</h2>
@@ -180,21 +169,13 @@
             </div>
         </div>
 
-        <!-- ÉCRAN 4 : FINAL (RÉCOMPENSE) -->
         <div id="screen-final" class="hidden space-y-6">
             <h1 class="title-font text-4xl text-rose-500 mb-2">Joyeux Anniversaire mon amour ! 🎉🎁</h1>
-            <p class="text-gray-700">Tu as tout trouvé ! Voici ta récompense...</p>
-            
-            <!-- Emplacement pour votre photo -->
-            <div class="relative w-48 h-48 mx-auto mt-6 mb-6 rounded-full overflow-hidden border-4 border-rose-300 shadow-xl">
-                <!-- REMPLACE L'URL DE L'IMAGE CI-DESSOUS PAR UNE PHOTO DE VOUS DEUX -->
-                <img src="https://images.unsplash.com/photo-1518199266791-5375a83164ba?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60" alt="Nous deux" class="w-full h-full object-cover">
-            </div>
+            <p class="text-gray-700">Bien joué ! T'as tout bon !</p>
 
-            <p class="text-lg font-semibold text-gray-800 mb-2">Prépare-toi pour la vraie surprise dans :</p>
+            <p class="text-lg font-semibold text-gray-800 mb-2 mt-6">Reviens ici pour découvrir la vraie surprise dans :</p>
             
-            <!-- Compteur -->
-            <div class="grid grid-cols-4 gap-2 text-center mt-4 mb-8">
+            <div id="countdown-container" class="grid grid-cols-4 gap-2 text-center mt-4 mb-8">
                 <div class="countdown-box rounded-xl p-2 shadow-md">
                     <div id="cd-days" class="text-3xl font-bold">00</div>
                     <div class="text-xs uppercase font-semibold">Jours</div>
@@ -212,35 +193,48 @@
                     <div class="text-xs uppercase font-semibold">Sec</div>
                 </div>
             </div>
-            
-            <p class="text-sm text-gray-500 mt-4 italic">Rendez-vous le 9 juin à 18h00...</p>
 
-            <!-- BOUTON SECRET -->
+            <div id="reveal-button-container" class="hidden mt-6 mb-8">
+                <button onclick="showSurprisePopup()" class="bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white font-bold py-4 px-8 rounded-full transition-all transform hover:scale-105 shadow-xl animate-pulse text-lg">
+                    Révéler la surprise 🎁
+                </button>
+            </div>
+            
+            <p class="text-sm text-gray-500 mt-4 italic">Rendez-vous le 9 juin à 17h00...</p>
+
             <div class="pt-6 border-t border-rose-200 mt-6">
                 <button onclick="checkPassword()" class="text-sm text-rose-400 hover:text-rose-600 font-medium transition-colors">
-                    <i class="fa-solid fa-lock text-xs mr-1"></i> J'ai un mot de passe secret
+                    <i class="fa-solid fa-lock text-xs mr-1"></i> J'ai un mot de passe secret pour l'espace VIP
                 </button>
             </div>
         </div>
 
-        <!-- ÉCRAN 5 : VIP / SECRET -->
+        <div id="surprise-popup" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/50 backdrop-blur-sm transition-opacity duration-300 opacity-0 flex">
+            <div id="surprise-popup-content" class="bg-white rounded-3xl p-8 max-w-sm w-full text-center shadow-2xl transform scale-95 transition-transform duration-300 border-4 border-rose-400">
+                <i class="fa-solid fa-box-open text-6xl text-rose-500 mb-4 animate-bounce"></i>
+                <h2 class="title-font text-4xl text-gray-800 mb-4">Vite !!! 🏃‍♀️💨</h2>
+                <p class="text-gray-700 text-lg font-medium mb-6">
+                    Rentre vite, ton colis surprise devrait être livré ! 📦💖
+                </p>
+                <button onclick="closeSurprisePopup()" class="bg-gray-800 hover:bg-gray-900 text-white font-bold py-2 px-6 rounded-full transition-colors w-full">
+                    J'y vais !
+                </button>
+            </div>
+        </div>
+
         <div id="screen-secret" class="hidden space-y-4">
             <h1 class="title-font text-4xl text-rose-500 mb-2">L'Espace VIP 🤫</h1>
             <p class="text-gray-700 text-sm">Bravo, tu as trouvé le code ! Voici notre petit coin rien qu'à nous...</p>
             
             <div class="max-h-[60vh] overflow-y-auto custom-scrollbar pr-2 pb-4">
-                <!-- Galerie Photos secrètes -->
                 <div class="grid grid-cols-2 gap-3 mt-4">
-                    <!-- REMPLACE CES URLS PAR VOS PHOTOS -->
                     <img src="https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?w=400&h=400&fit=crop" class="rounded-xl shadow-md border-2 border-white aspect-square object-cover">
                     <img src="https://images.unsplash.com/photo-1511895426328-dc8714191300?w=400&h=400&fit=crop" class="rounded-xl shadow-md border-2 border-white aspect-square object-cover">
                     <img src="https://images.unsplash.com/photo-1522673607200-164d1b6ce486?w=400&h=400&fit=crop" class="rounded-xl shadow-md border-2 border-white aspect-square object-cover">
                     <img src="https://images.unsplash.com/photo-1606800052052-a08af7148866?w=400&h=400&fit=crop" class="rounded-xl shadow-md border-2 border-white aspect-square object-cover">
                 </div>
 
-                <!-- Embed Youtube -->
                 <div class="mt-6 w-full rounded-xl overflow-hidden shadow-lg border-2 border-rose-200 bg-black">
-                    <!-- REMPLACE LE LIEN EMBED DE LA VIDÉO ICI -->
                     <iframe width="100%" height="200" src="https://www.youtube.com/embed/jfKfPfyJRdk" title="Vidéo spéciale" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                 </div>
             </div>
@@ -255,36 +249,29 @@
     </div>
 
     <script>
-        // ==========================================
-        // 1. CONFIGURATION DU QUIZ (SÉCURISÉE)
-        // ==========================================
-        // Les réponses correctes sont masquées (obfusquées)
         const questions = [
             {
                 question: "Où avons-nous échangé notre tout premier baiser ?",
                 options: ["Dans la voiture", "Au devant d'une scène", "Lors d'une balade", "Chez moi"],
-                c: atob("MQ==") // Index 1 encodé
+                c: atob("MQ==")
             },
             {
                 question: "Quel est le petit surnom que je te donne le plus souvent ?",
                 options: ["Mon cœur", "Bébé", "Ma mouette", "Mon amour"],
-                c: [atob("MA=="), atob("MQ=="), atob("Mg=="), atob("Mw==")] // Index 0,1,2,3 encodés
+                c: [atob("MA=="), atob("MQ=="), atob("Mg=="), atob("Mw==")]
             },
             {
                 question: "Quel plat je pourrais manger tous les jours sans me lasser ?",
                 options: ["Des pâtes carbo", "Des pâtes chorizo", "Une pizza", "Un burger"],
-                c: atob("MQ==") // Index 1 encodé
+                c: atob("MQ==")
             },
             {
                 question: "Quel est le premier artiste que nous ayons écouté ensemble?",
                 options: ["Rim'K", "Green Montana", "JoLaGreen23", "PLK"],
-                c: atob("Mg==") // Index 2 encodé
+                c: atob("Mg==")
             }
         ];
 
-        // ==========================================
-        // 2. LOGIQUE DU JEU ET DES ÉCRANS
-        // ==========================================
         let currentQuestion = 0;
 
         function switchScreen(hideId, showId) {
@@ -337,7 +324,6 @@
         function checkAnswer(selectedIndex, btnElement) {
             const correctIndex = questions[currentQuestion].c;
             
-            // Décoder et vérifier la réponse
             let isCorrect = false;
             if (Array.isArray(correctIndex)) {
                  isCorrect = correctIndex.map(Number).includes(selectedIndex);
@@ -375,13 +361,9 @@
             switchScreen('screen-error', 'screen-welcome');
         }
 
-        // ==========================================
-        // 3. LOGIQUE DU MOT DE PASSE SECRET
-        // ==========================================
         function checkPassword() {
             const pwd = prompt("Quel est le mot de passe secret ? 🤫");
             
-          
             if (pwd && btoa(pwd.toLowerCase().trim()) === "cGV0aXRlc2Fsb3Bl") {
                 switchScreen('screen-final', 'screen-secret');
             } else if (pwd !== null) { 
@@ -389,11 +371,8 @@
             }
         }
 
-        // ==========================================
-        // 4. LOGIQUE DU COMPTE À REBOURS ET VERROUILLAGE
-        // ==========================================
         const lockTargetDate = new Date("June 9, 2026 00:01:00").getTime();
-        const finalTargetDate = new Date("June 9, 2026 18:00:00").getTime();
+        const finalTargetDate = new Date("June 9, 2026 17:00:00").getTime();
         let lockInterval;
 
         function initApp() {
@@ -440,7 +419,6 @@
             const pwd = document.getElementById("magic-password").value;
             const errorMsg = document.getElementById("lock-error");
             
-         
             if (btoa(pwd.toLowerCase().trim()) === "Z2VvZmZyZXlsZXJvaQ==") {
                 clearInterval(lockInterval);
                 switchScreen('screen-lock', 'screen-welcome');
@@ -464,12 +442,13 @@
             const distance = finalTargetDate - now;
 
             if (distance < 0) {
-                document.getElementById("cd-days").innerText = "00";
-                document.getElementById("cd-hours").innerText = "00";
-                document.getElementById("cd-minutes").innerText = "00";
-                document.getElementById("cd-seconds").innerText = "00";
+                document.getElementById("countdown-container").classList.add("hidden");
+                document.getElementById("reveal-button-container").classList.remove("hidden");
                 return;
             }
+
+            document.getElementById("countdown-container").classList.remove("hidden");
+            document.getElementById("reveal-button-container").classList.add("hidden");
 
             const days = Math.floor(distance / (1000 * 60 * 60 * 24));
             const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
@@ -482,9 +461,33 @@
             document.getElementById("cd-seconds").innerText = seconds.toString().padStart(2, '0');
         }
 
-        // ==========================================
-        // 5. EFFETS VISUELS
-        // ==========================================
+        function showSurprisePopup() {
+            const popup = document.getElementById('surprise-popup');
+            const content = document.getElementById('surprise-popup-content');
+            
+            popup.classList.remove('hidden');
+            setTimeout(() => {
+                popup.classList.remove('opacity-0');
+                content.classList.remove('scale-95');
+                content.classList.add('scale-100');
+            }, 10);
+            
+            createConfetti();
+        }
+
+        function closeSurprisePopup() {
+            const popup = document.getElementById('surprise-popup');
+            const content = document.getElementById('surprise-popup-content');
+            
+            popup.classList.add('opacity-0');
+            content.classList.remove('scale-100');
+            content.classList.add('scale-95');
+            
+            setTimeout(() => {
+                popup.classList.add('hidden');
+            }, 300);
+        }
+
         function createFloatingDecorations() {
             const icons = ['fa-heart', 'fa-gift', 'fa-cake-candles', 'fa-star'];
             const colors = ['#ff4d6d', '#ffd166', '#ff9f1c', '#ffb3c6'];
@@ -537,9 +540,6 @@
             }
         }
 
-        // ==========================================
-        // 6. INITIALISATION
-        // ==========================================
         window.onload = initApp;
 
     </script>
